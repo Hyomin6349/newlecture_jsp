@@ -1,4 +1,4 @@
-package com.newlecture.web.controller;
+package com.newlecture.web.controller.notice;
 
 import java.io.IOException;
 import java.sql.*;
@@ -16,7 +16,7 @@ import com.newlecture.web.entity.NoticeView;
 import com.newlecture.web.service.NoticeService;
 
 @WebServlet("/notice/list")
-public class NoticeListController extends HttpServlet{
+public class ListController extends HttpServlet{
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -39,7 +39,7 @@ public class NoticeListController extends HttpServlet{
 		
 		req.setAttribute("list", list);
 		req.setAttribute("count", count);
-		req.getRequestDispatcher("/WEB-INF/View/notice/list.jsp").forward(req, resp); 
+		req.getRequestDispatcher("/WEB-INF/view/notice/list.jsp").forward(req, resp); 
 		
 	}
 
