@@ -241,4 +241,34 @@ public class NoticeService {
 		
 		return notice;
 	}
+
+	public int deleteNoticeAll(int[] ids) {
+		
+		int result = 0;
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		
+		String params = "";
+		for(int i=0; i<ids.length;i++) {
+			params += ids[i];
+			if(i<=ids.length-1) params += ",";
+		}
+		String sql = "DELETE NOTICE WHERE ID IN ("+params+")";
+		
+
+		try {
+			con = JDBCConnection.getConnection();
+			st = con.createStatement();
+			
+			result = st.executeUpdate(sql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			JDBCClose.close(con, st, rs);
+		}
+		
+		return result;
+	}
 }
