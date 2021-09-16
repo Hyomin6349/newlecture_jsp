@@ -22,7 +22,32 @@ public class NoticeService {
 	}
 	
 	public int insertNotice(Notice notice) {
-		return 0;
+		
+		int result = 0;
+		Connection con = null;
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		
+		String sql = "INSERT INTO NOTICE(TITLE, CONTENT, WRITER_ID, PUB) VALUES (?, ?, ?, ?)";
+		
+
+		try {
+			con = JDBCConnection.getConnection();
+			st = con.prepareStatement(sql);
+			st.setString(1, notice.getTitle());
+			st.setString(2, notice.getContent());
+			st.setString(3, notice.getWriter_id());
+			st.setBoolean(4, notice.getPub());
+			
+			result = st.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			JDBCClose.close(con, st, rs);
+		}
+		
+		return result;
 	}
 	
 	public int deleteNotice(int id) {
@@ -78,8 +103,9 @@ public class NoticeService {
 				String files = rs.getString("FILES");
 				//String content = rs.getString("CONTENT");
 				int cmtCount = rs.getInt("CMT_COUNT");
+				boolean pub = rs.getBoolean("PUB");
 				
-				NoticeView notice = new NoticeView(id, title, regdate, writer_id, hit, files, cmtCount);
+				NoticeView notice = new NoticeView(id, title, regdate, writer_id, hit, files, pub,cmtCount);
 				list.add(notice);
 			}			
 		} catch (SQLException e) {
@@ -149,8 +175,9 @@ public class NoticeService {
 				int hit = rs.getInt("HIT");
 				String files = rs.getString("FILES");
 				String content = rs.getString("CONTENT");
+				boolean pub = rs.getBoolean("PUB");
 				
-				notice = new Notice(nid, title, regdate, writer_id, hit, files, content);
+				notice = new Notice(nid, title, regdate, writer_id, hit, files, content, pub);
 			}			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -188,8 +215,9 @@ public class NoticeService {
 				int hit = rs.getInt("HIT");
 				String files = rs.getString("FILES");
 				String content = rs.getString("CONTENT");
+				boolean pub = rs.getBoolean("PUB");
 				
-				notice = new Notice(nid, title, regdate, writer_id, hit, files, content);
+				notice = new Notice(nid, title, regdate, writer_id, hit, files, content, pub);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -229,8 +257,9 @@ public class NoticeService {
 				int hit = rs.getInt("HIT");
 				String files = rs.getString("FILES");
 				String content = rs.getString("CONTENT");
+				boolean pub = rs.getBoolean("PUB");
 				
-				notice = new Notice(nid, title, regdate, writer_id, hit, files, content);
+				notice = new Notice(nid, title, regdate, writer_id, hit, files, content, pub);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
