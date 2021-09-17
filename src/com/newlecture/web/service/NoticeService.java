@@ -28,7 +28,7 @@ public class NoticeService {
 		PreparedStatement st = null;
 		ResultSet rs = null;
 		
-		String sql = "INSERT INTO NOTICE(TITLE, CONTENT, WRITER_ID, PUB) VALUES (?, ?, ?, ?)";
+		String sql = "INSERT INTO NOTICE(TITLE, CONTENT, WRITER_ID, PUB, FILES) VALUES (?, ?, ?, ?, ?)";
 		
 
 		try {
@@ -38,6 +38,7 @@ public class NoticeService {
 			st.setString(2, notice.getContent());
 			st.setString(3, notice.getWriter_id());
 			st.setBoolean(4, notice.getPub());
+			st.setString(5, notice.getFiles());
 			
 			result = st.executeUpdate();
 		} catch (SQLException e) {
