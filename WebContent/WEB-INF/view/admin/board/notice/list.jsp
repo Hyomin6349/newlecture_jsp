@@ -180,7 +180,7 @@
 									<td>${n.writer_id}</td>
 									<td><fmt:formatDate pattern="yy-MM-dd" value="${n.regdate}"></fmt:formatDate></td>
 									<td><fmt:formatNumber value="${n.hit}"/></td>
-									<td><input type="checkbox" name="open-id" value="${n.id}"></td>
+									<td><input type="checkbox" name="open-id" value="${n.id}" ${(n.pub==true)?'checked':'' }></td>
 									<td><input type="checkbox" name="del-id" value="${n.id}"></td>
 								
 								</tr>
@@ -201,6 +201,11 @@
 	
 	
 					<div class="text-align-right margin-top">
+						<c:set var="ids" value=""/>
+						<c:forEach var="n" items="${list }">
+							<c:set var="ids" value="${ids} ${n.id}"/>
+						</c:forEach>
+						<input type="hidden" name="ids" value="${ids}"/>
 						<input type="submit" class="btn-text btn-default" name="cmd" value="일괄공개">
 						<input type="submit" class="btn-text btn-default" name="cmd" value="일괄삭제">
 						<a class="btn-text btn-default" href="reg">글쓰기</a>				

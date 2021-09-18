@@ -17,6 +17,28 @@ import com.newlecture.web.util.JDBCConnection;
 
 public class NoticeService {
 	
+	public int pubNoticeAll(int[] oids, int[] cids) {
+		
+		List<String> oidsList = new ArrayList<>();
+		for(int i=0;i<oids.length;i++) oidsList.add(String.valueOf(oids[i]));
+		List<String> cidsList = new ArrayList<>();
+		for(int i=0;i<cids.length;i++) cidsList.add(String.valueOf(cids[i]));
+		
+		return pubNoticeAll(oidsList, cidsList);
+	}
+	
+	public int pubNoticeAll(List<String> oids, List<String> cids) {
+
+		String oidsCSV = String.join(",", oids);
+		String cidsCSV = String.join(",", cids);
+		
+		return pubNoticeAll(oidsCSV, cidsCSV);
+	}
+	
+	public int pubNoticeAll(String oidsCSV, String cidsCSV) {
+		return 0;
+	}
+	
 	public int removeNoticeAll(int[] ids) {
 		return 0;
 	}
@@ -86,6 +108,50 @@ public class NoticeService {
 				+ "FROM NOTICE_VIEW N "
 				+ "WHERE "+ field +" LIKE ? ) "
 				+ "WHERE NUM BETWEEN ? AND ?";
+
+		try {
+			con = JDBCConnection.getConnection();
+			st = con.prepareStatement(sql);
+			st.setString(1, "%"+query+"%");
+			st.setInt(2, 1+(page-1)*10);
+			st.setInt(3, page*10);
+			rs = st.executeQuery();
+
+			while(rs.next()){	
+				int id = rs.getInt("ID");
+				String title = rs.getString("TITLE");
+				Date regdate = rs.getDate("REGDATE");
+				String writer_id = rs.getString("WRITER_ID");
+				int hit = rs.getInt("HIT");
+				String files = rs.getString("FILES");
+				//String content = rs.getString("CONTENT");
+				int cmtCount = rs.getInt("CMT_COUNT");
+				boolean pub = rs.getBoolean("PUB");
+				
+				NoticeView notice = new NoticeView(id, title, regdate, writer_id, hit, files, pub,cmtCount);
+				list.add(notice);
+			}			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			JDBCClose.close(con, st, rs);
+		}
+		
+		return list;
+	}
+	
+	public List<NoticeView> getNoticePubList(String field, String query, int page) {
+		Connection con = null;
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		
+		List<NoticeView> list = new ArrayList<>();
+		String sql = "SELECT * FROM " 
+				+"(SELECT ROW_NUMBER() OVER (ORDER BY REGDATE DESC) NUM, N.* "
+				+ "FROM NOTICE_VIEW N "
+				+ "WHERE "+ field +" LIKE ? ) "
+				+ "WHERE PUB=1 AND NUM BETWEEN ? AND ?";
 
 		try {
 			con = JDBCConnection.getConnection();
@@ -282,7 +348,7 @@ public class NoticeService {
 		String params = "";
 		for(int i=0; i<ids.length;i++) {
 			params += ids[i];
-			if(i<=ids.length-1) params += ",";
+			if(i<ids.length-1) params += ",";
 		}
 		String sql = "DELETE NOTICE WHERE ID IN ("+params+")";
 		
@@ -301,4 +367,8 @@ public class NoticeService {
 		
 		return result;
 	}
+
+	
+
+	
 }
