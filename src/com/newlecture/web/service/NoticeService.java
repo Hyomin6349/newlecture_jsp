@@ -36,7 +36,32 @@ public class NoticeService {
 	}
 	
 	public int pubNoticeAll(String oidsCSV, String cidsCSV) {
-		return 0;
+
+		int result = 0;
+		Connection con = null;
+		Statement stOpen = null;
+		Statement stClose = null;
+		
+		String sqlOpen = "UPDATE NOTICE SET PUB=1 WHERE ID IN ("+oidsCSV+")";
+		String sqlClose = "UPDATE NOTICE SET PUB=0 WHERE ID IN ("+cidsCSV+")";
+		
+		try {
+			con = JDBCConnection.getConnection();
+			stOpen = con.createStatement();
+			result = stOpen.executeUpdate(sqlOpen);
+			
+
+			stClose = con.createStatement();
+			result += stOpen.executeUpdate(sqlClose);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			JDBCClose.close(con, stOpen, stClose);
+		}
+		
+		return result;
 	}
 	
 	public int removeNoticeAll(int[] ids) {
